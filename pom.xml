@@ -18,11 +18,11 @@
         <java.version>1.8</java.version>
         <nd4j.backend>nd4j-native-platform</nd4j.backend>
 
-        <nd4j.version>1.0.0-beta6</nd4j.version>
-        <dl4j.version>1.0.0-beta6</dl4j.version>
-        <datavec.version>1.0.0-beta6</datavec.version>
-        <arbiter.version>1.0.0-beta6</arbiter.version>
-        <rl4j.version>1.0.0-beta6</rl4j.version>
+        <nd4j.version>1.0.0-beta7</nd4j.version>
+        <dl4j.version>1.0.0-beta7</dl4j.version>
+        <datavec.version>1.0.0-beta7</datavec.version>
+        <arbiter.version>1.0.0-beta7</arbiter.version>
+        <rl4j.version>1.0.0-beta7</rl4j.version>
 
 
         <!-- Scala binary version: DL4J's Spark and UI functionality are released with both Scala 2.10 and 2.11 support -->
@@ -87,7 +87,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
         <!-- ND4J backend. You need one in every DL4J project. Normally define artifactId as either nd4j-native-platform or nd4j-cuda-X.X-platform to use CUDA GPUs (check parent pom for supported cuda versions) -->
         <dependency>
@@ -185,8 +184,14 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.3.5</version>
+            <version>4.3.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j.examples</groupId>
+            <artifactId>shared-utilities</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
