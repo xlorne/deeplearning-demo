@@ -3,6 +3,7 @@ package com.codingapi.deeplearningdemo.db;
 import com.codingapi.deeplearningdemo.utils.CsvUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.datavec.api.records.reader.impl.csv.SerializableCSVParser;
 import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
@@ -16,7 +17,11 @@ import org.deeplearning4j.ui.model.storage.FileStatsStorage;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
+import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
+import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
@@ -34,12 +39,13 @@ class WeatherMapperTest {
     //Random number generator seed, for reproducability
     public static final int seed = 12345;
     //Number of epochs (full passes of the data)
-    public static final int nEpochs = 200;
+    public static final int nEpochs = 100;
 
     //Batch size: i.e., each epoch has nSamples/batchSize parameter updates
     public static final int batchSize = 100;
+
     //Network learning rate
-    public static final double learningRate = 0.01;
+    public static final double learningRate = 0.03;
 
 
     public static final Random rng = new Random(seed);
@@ -64,11 +70,12 @@ class WeatherMapperTest {
             net.save(locationToSave, saveUpdater);
         }
 
-//        double v1 = 2020;
-        double v2 = 6;
-        double v3 = 15;
+        double v1 = 2019;
+        double v2 = 7;
+        double v3 = 16;
 
-        final INDArray input = Nd4j.create(new double[] {v2,v3}, 1, 2);
+        final INDArray input = Nd4j.create(new double[] {v1,v2,v3}, 1, 3);
+
         INDArray out = net.output(input, false);
 
         System.out.println("predict:"+out);
@@ -80,7 +87,6 @@ class WeatherMapperTest {
 
         List<Weather> list = weatherMapper.findAll();
         log.info("list->{}",list);
-
         //Generate the training data
         DataSetIterator iterator =  CsvUtils.getTrainingData(list,batchSize,rng);
 
@@ -98,7 +104,7 @@ class WeatherMapperTest {
 
     private MultiLayerNetwork build(){
         //Create the network
-        int numInput = 2;
+        int numInput = 3;
         int numOutputs = 2;
 
         MultiLayerNetwork net = new MultiLayerNetwork(new NeuralNetConfiguration.Builder()
@@ -106,15 +112,15 @@ class WeatherMapperTest {
                 .weightInit(WeightInit.XAVIER)
                 .updater(new Adam(learningRate))
                 .list()
-                .layer(0, new DenseLayer.Builder().nIn(numInput).nOut(100)
+                .layer(0, new DenseLayer.Builder().nIn(numInput).nOut(30)
                         .activation(Activation.RELU)
                         .build())
-                .layer(1, new DenseLayer.Builder().nIn(100).nOut(15)
+                .layer(1, new DenseLayer.Builder().nIn(30).nOut(10)
                         .activation(Activation.RELU)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                        .activation(Activation.IDENTITY)
-                        .nIn(15).nOut(numOutputs).build())
+                            .activation(Activation.IDENTITY)
+                        .nIn(10).nOut(numOutputs).build())
                 .build()
         );
         net.init();

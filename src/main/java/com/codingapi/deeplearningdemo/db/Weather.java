@@ -26,10 +26,12 @@ public class Weather implements ICsv {
 
     private int day;
 
-    private int precipitation;
+    private double precipitation;
+
+
 
     @Override
     public String[] columns() {
-        return new String[]{"year","mouth","day","minT","maxT"};
+        return new String[]{"year","mouth","day","minT","maxT","precipitation"};
     }
 }
