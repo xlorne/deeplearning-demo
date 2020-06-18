@@ -16,13 +16,14 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <nd4j.backend>nd4j-native-platform</nd4j.backend>
+<!--        <nd4j.backend>nd4j-native-platform</nd4j.backend>-->
+        <nd4j.backend>nd4j-cuda-10.1-platform</nd4j.backend>
 
-        <nd4j.version>1.0.0-beta7</nd4j.version>
-        <dl4j.version>1.0.0-beta7</dl4j.version>
-        <datavec.version>1.0.0-beta7</datavec.version>
-        <arbiter.version>1.0.0-beta7</arbiter.version>
-        <rl4j.version>1.0.0-beta7</rl4j.version>
+        <nd4j.version>1.0.0-beta6</nd4j.version>
+        <dl4j.version>1.0.0-beta6</dl4j.version>
+        <datavec.version>1.0.0-beta6</datavec.version>
+        <arbiter.version>1.0.0-beta6</arbiter.version>
+        <rl4j.version>1.0.0-beta6</rl4j.version>
 
 
         <!-- Scala binary version: DL4J's Spark and UI functionality are released with both Scala 2.10 and 2.11 support -->
@@ -60,7 +61,6 @@
     </repositories>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

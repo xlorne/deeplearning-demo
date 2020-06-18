@@ -17,10 +17,7 @@
 package com.codingapi.deeplearningdemo;
 
 import lombok.SneakyThrows;
-import org.datavec.api.records.reader.RecordReader;
-import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
-import org.datavec.api.split.FileSplit;
-import org.deeplearning4j.core.storage.StatsStorage;
+import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
@@ -29,8 +26,8 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.api.UIServer;
-import org.deeplearning4j.ui.model.stats.StatsListener;
-import org.deeplearning4j.ui.model.storage.FileStatsStorage;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
