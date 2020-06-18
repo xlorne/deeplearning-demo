@@ -17,8 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
+import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +37,7 @@ class WeatherMapperTest {
     //Random number generator seed, for reproducability
     public static final int seed = 12345;
     //Number of epochs (full passes of the data)
-    public static final int nEpochs = 100;
+    public static final int nEpochs = 10;
 
     //Batch size: i.e., each epoch has nSamples/batchSize parameter updates
     public static final int batchSize = 100;
@@ -65,14 +68,14 @@ class WeatherMapperTest {
             net.save(locationToSave, saveUpdater);
         }
 
-        double v1 = 2019;
-        double v2 = 7;
-        double v3 = 16;
+//        double v1 = 2019;
+        double v2 = 4;
+        double v3 = 18;
 
-        final INDArray input = Nd4j.create(new double[] {v1,v2,v3}, 1, 3);
-
+        INDArray input = Nd4j.create(new double[] {v2,v3}, 1, 2);
+        input =  input.div(10);
         INDArray out = net.output(input, false);
-
+        out = out.mul(10);
         System.out.println("predict:"+out);
 
     }
@@ -99,23 +102,35 @@ class WeatherMapperTest {
 
     private MultiLayerNetwork build(){
         //Create the network
-        int numInput = 3;
+        int numInput = 2;
         int numOutputs = 2;
 
         MultiLayerNetwork net = new MultiLayerNetwork(new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .weightInit(WeightInit.XAVIER)
-                .updater(new Adam(learningRate))
+                .updater(new Nesterovs(learningRate, 0.9))
                 .list()
-                .layer(0, new DenseLayer.Builder().nIn(numInput).nOut(30)
+                .layer(new DenseLayer.Builder().nIn(numInput).nOut(500)
                         .activation(Activation.RELU)
                         .build())
-                .layer(1, new DenseLayer.Builder().nIn(30).nOut(10)
+                .layer( new DenseLayer.Builder().nIn(500).nOut(300)
                         .activation(Activation.RELU)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+                .layer( new DenseLayer.Builder().nIn(300).nOut(100)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer( new DenseLayer.Builder().nIn(100).nOut(50)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer( new DenseLayer.Builder().nIn(50).nOut(30)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer( new DenseLayer.Builder().nIn(30).nOut(5)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer( new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
                             .activation(Activation.IDENTITY)
-                        .nIn(10).nOut(numOutputs).build())
+                        .nIn(5).nOut(numOutputs).build())
                 .build()
         );
         net.init();
