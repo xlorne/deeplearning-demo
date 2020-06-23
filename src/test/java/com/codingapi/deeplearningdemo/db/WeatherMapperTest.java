@@ -68,12 +68,11 @@ class WeatherMapperTest {
             net.save(locationToSave, saveUpdater);
         }
 
-//        double v1 = 2019;
-        double v2 = 4;
-        double v3 = 18;
+        double v1 = 2020;
+        double v2 = 6;
+        double v3 = 23;
 
-        INDArray input = Nd4j.create(new double[] {v2,v3}, 1, 2);
-        input =  input.div(10);
+        INDArray input = Nd4j.create(new double[] {(v1-2000)/100,v2/10,v3/30}, 1, 3);
         INDArray out = net.output(input, false);
         out = out.mul(10);
         System.out.println("predict:"+out);
@@ -102,7 +101,7 @@ class WeatherMapperTest {
 
     private MultiLayerNetwork build(){
         //Create the network
-        int numInput = 2;
+        int numInput = 3;
         int numOutputs = 2;
 
         MultiLayerNetwork net = new MultiLayerNetwork(new NeuralNetConfiguration.Builder()
